@@ -12,7 +12,7 @@ Vue.use(VueCustomElement);
 import Navbar from './components/navbar/codigo-navbar';
 import Footer from './components/footer/codigo-footer';
 import KioskShowTable from './components/tables/kiosk/project/table';
-
+export const EventBus = new Vue();
 
 Vue.customElement('codigo-navbar', Navbar);
 Vue.customElement('codigo-footer',Footer);

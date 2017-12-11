@@ -29,7 +29,7 @@
 </transition>
 
 <div class="card-space">
-<transition-group name="fade">
+<transition-group name="fade" mode="out-in">
 <codigo-card 
 @kill-me="pullCard" 
 :type="card.type" 
@@ -46,6 +46,7 @@ v-for="(card,index) in cards"
 </div>
 </template>
 <script>
+import {EventBus} from '../../../../main';
 import Row from "./row";
 import Data from "../../../../../dist/data/mock.js";
 import Loader from "../../../utility/loader/loader";
@@ -56,7 +57,8 @@ export default {
       data: "Test",
       rows: Data,
       loading: false,
-      cards: []
+      cards: [],
+      cardId:0
     };
   },
   components: {
@@ -74,24 +76,25 @@ export default {
       console.log(this.loading);
     },
     pushCard() {
-      this.cards.push({
+      let card = {
         type: "success",
         message: "Success!",
-        id:Math.floor(Math.random(1,10)*1000)
-      });
+        id:this.cardId++
+      }
+      this.cards.push(card);
     },
     pullCard(id) {
-
-      console.log("Card pulled: ",id)
-      this.cards.map((c,i)=>{
-        if(c.id==id){
-          return this.cards.splice(i,1);
-        }
+      setTimeout(()=>{
+        this.cards = this.cards.filter((c,i)=>{
+        return c.id!=id;
       });
+      },3000)
     }
   },
   created() {
-
+    EventBus.$on('kill-me',(id)=>{
+      this.pullCard(id);
+    })
   }
 };
 </script>
@@ -106,7 +109,7 @@ export default {
 
 }
 .fade-leave-active {
-  animation: fade-in 0.3s reverse;
+  animation: flip-out 0.5s;
 }
 .bounce-enter-active {
   animation: bounce-in 0.3s;
@@ -127,10 +130,22 @@ export default {
 }
 @keyframes fade-in {
   0% {
-    opacity:0
+    opacity:0;
+    left: 50px;
   }
   100% {
     opacity:1;
+    left:0
+  }
+}
+@keyframes flip-out{
+  0%{
+    transform: rotateX( 0deg );
+    opacity:1;
+  }
+  100%{
+transform: rotateX( 90deg );
+opacity:0;
   }
 }
 </style>

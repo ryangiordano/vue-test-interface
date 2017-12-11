@@ -18,6 +18,8 @@ const cardTypes ={
   "success":1,
   "error":2,
 }
+import {EventBus} from '../../../main';
+
 export default {
   data() {
     return {
@@ -29,10 +31,7 @@ export default {
     "type","message","date","id"
   ],
   created(){
-    setTimeout(()=>{
-      console.log(this.id)
-      this.$emit("kill-me",this.id);
-    },5000)
+      EventBus.$emit("kill-me",this.id);
   }
 };
 </script>
